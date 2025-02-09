@@ -171,7 +171,8 @@ directives
 With Angular, you can “enhance” elements by adding so-called Directives to them
 ngModel
 
-two way binding - u can get the value and also write the value in html elements(input)
+two way binding - Change data AND listen to data changes at the same time
+u can get the value and also write the value in html elements(input)
 enteredTitle = '';
 [(ngModel)]="enteredTitle"
 enteredTitle = signal('');
@@ -202,7 +203,9 @@ what ever style applied to div here comes to both
 
 Pipes
 
-Service - Dependency Injection
+Service - For centralized & sharable data- and logic-management
+
+ - Dependency Injection
 constructor(private taskService: TasksService) {}
 
 @Injectable({ providedIn: 'root' })
@@ -210,4 +213,19 @@ export class TaskService {}
 
 private tasksService = inject(TaskService);
 
+ngModule
+@NgModule({
+  declarations: [AppComponent, HeaderComponent, UserComponent], //import all the component and directive and all and its for non-standalone component if standalone is false, and  others are used in app component so imported here
+  bootstrap: [AppComponent], // root component only in root and it should be imported always
+  imports: [BrowserModule], BrowserModule only added in the root and should be imported always and HeaderComponent if standalone is true and we add modules here
+}) 
 
+if usercomponent in the app component we can add it in decl and if card inside user then we need to add card in decl as well in appmodule (standalone :false)
+pipe is inside browser module
+
+@NgModule({
+  declarations: [CardComponent],
+  exports: [CardComponent],
+})
+module u need to import as well as u need to export if you want to use it in other component
+CommonModule for datepipe etc
