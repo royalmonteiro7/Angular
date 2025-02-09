@@ -1,0 +1,213 @@
+What Is Angular?
+Angular is a frontend JavaScript framework. It helps with building interactive, modern web user interfaces.
+It’s also a collection of tools & features - CLI, Debugging Tools, IDE Plugins
+
+Why a framework?
+Simplifies the process of building complex, interactive web user interfaces
+Write declarative code
+Separation of concerns via components
+Object-oriented programming concepts & principles
+Use TypeScript
+
+The Angular CLI is a command-line interface tool which allows you to scaffold, develop, test, deploy, and maintain Angular applications directly from a command shell.
+
+main.js file (script) automatically imported into index.html by CLI (angular.json)
+
+Initial Phase:
+Step	Process
+1️⃣	Browser loads index.html
+2️⃣	Encounters <app-root> but it’s empty
+3️⃣	Loads polyfills.js (Ensures compatibility) (script)
+4️⃣	Loads main.js (Executes main.ts) (script)
+🔹 Angular Bootstraps:
+Step	Process
+5️⃣	Executes bootstrapApplication(AppComponent)
+6️⃣	Finds <app-root> in index.html
+7️⃣	Creates an instance of AppComponent - automatical instantiation due to @component
+8️⃣	Injects the component’s template into <app-root>
+🔹 Final Rendering:
+Step	Process
+9️⃣	Replaces <app-root> with <h1>Hello from Angular!</h1>
+🔟	Application is now interactive and fully loaded
+
+@Component adds metadata(data about data) to a class, making it an Angular component.
+✅ Angular reads and processes this metadata at compile-time.
+✅ The Ivy Compiler transforms metadata into efficient JavaScript code.
+✅ The metadata helps Angular render, bind, and manage components dynamically.
+
+custom component - creating own component
+
+we can set multiple styles using array in styleUrls
+
+add images in folder and mention in the angular.json file under assert
+
+binding to html - string interpolation({{ }})
+
+property binding - <img src="{{selectedUser.avatar}}" /> instead of this <img [src]="selectedUser.avatar" />
+<img src="{{imagePath}}" /> - not good
+
+Attributes binding 
+Binds data to HTML attributes, not properties.
+Uses attr. prefix.
+examples - aria-label, colspan, role
+<td [attr.colspan]="colSpanValue">Table Data</td>
+
+Using Getters For Computed Values
+get imagePath(){
+}
+html - <img [src]="imagePath" />
+
+Event Binding
+  onSelectUser() {
+    console.log('Clicked');
+  }
+<button (click)="onSelectUser()">
+
+Zone.js notifies Angular about user events, expired timers etc.
+state changes it checking all component
+
+There Are Two Approaches For Updating State
+option 1
+Relying on Zone.js & Angular’s change 
+detection mechanism
+
+Works automatically, no special 
+instructions required
+Supported since Angular 2
+
+Option 2
+Using Signals to notify Angular about value changes & required UI updates
+
+Requires usage of special “signal” 
+instructions & code
+Supported since Angular 16
+
+Runs only where it's used
+
+signals
+A signal is an object that stores a value (any type of value, including nested objects)
+
+Angular manages subscriptions to the signal to get notified about value changes
+When a change occurs, Angular is then able to update the part of the UI that needs updating
+
+example signal
+selectedUser = signal(DUMMY_USERS[randomUser]); - dummy is initial values
+to set value
+this.selectedUser.set(DUMMY_USERS[randomUser]);
+to get value
+this.selectedUser().avatar
+
+instead of get 
+imagePath = computed(() => 'assets/users/' + this.selectedUser().avatar);
+it will computed only when single inside of it changes
+get imagePath()
+
+diff between computed and normal
+computed
+It memoizes the result, meaning it only recalculates when needed.
+import { signal, computed } from '@angular/core';
+
+export class AppComponent {
+  count = signal(2);
+  squared = computed(() => this.count() * this.count()); // Automatically updates
+
+  increment() {
+    this.count.set(this.count() + 1);
+  }
+}
+Here, squared will automatically update whenever count changes.
+
+normal
+getSquared() {
+  return this.count() * this.count();
+}
+It executes every time the function is called, even if count hasn’t changed.
+
+@Input() component input(properties)
+
+Required and optional input
+@Input({required:true}) avatar!: string;
+
+using signal
+avatar = input(); - normal input signal
+avatar = input<string>(); - type specific
+avatar = input.required(); - required
+avatar = input.required<string>();- type and required
+
+Output
+child
+<button (click)="onSelectUser()" />
+@Output select = new EventEmitter<>();
+onSelectUser() {
+  this.select.emit(this.id);
+}
+parent
+(select)="onSelectUser($event)" 
+onSelectUser(id: string) {
+  console.log(id);
+}
+signal
+select = output<string>();
+
+diff between type and interface
+type is static cant extended
+interface we can
+
+Directives
+@for(user of users;track user.id){}
+@if(){}
+@else{}
+
+legacy
+structural directives
+<li *ngFor="let user of users"></li>
+<app-tasks *ngIf="SelectedUser; else fallback" [name]="SelectedUser!.name" />
+<ng-template #fallback><p id="fallback">Select a user to see their tasks!</p></ng-template>
+
+Class Bindings
+[class.active]="selected" selected should true or false here active will be css 
+
+directives
+With Angular, you can “enhance” elements by adding so-called Directives to them
+ngModel
+
+two way binding - u can get the value and also write the value in html elements(input)
+enteredTitle = '';
+[(ngModel)]="enteredTitle"
+enteredTitle = signal('');
+[(ngModel)]="enteredTitle"
+(ngSubmit)="onSubmit()"
+
+In a standard HTML form, when you click the submit button, the browser:
+Refreshes or navigates to a new page (if the action attribute is set).
+Sends data to the server via HTTP request (GET or POST).
+Triggers a full-page reload, which is often undesirable in modern web apps.
+
+In Angular, when you use (ngSubmit), it intercepts the form submission and prevents the default behavior, allowing you to handle it within the component
+
+Content Projection with ng-content
+<div>
+  <ng-content />
+</div>
+
+<app-card>
+	html 1
+</app-card>
+
+<app-card>
+	html 2
+</app-card>
+
+what ever style applied to div here comes to both
+
+Pipes
+
+Service - Dependency Injection
+constructor(private taskService: TasksService) {}
+
+@Injectable({ providedIn: 'root' })
+export class TaskService {}
+
+private tasksService = inject(TaskService);
+
+
