@@ -102,7 +102,7 @@ imagePath = computed(() => 'assets/users/' + this.selectedUser().avatar);
 it will computed only when single inside of it changes
 get imagePath()
 
-diff between computed and normal
+diff between computed (readonly cant be changed outside of it)and normal
 computed
 It memoizes the result, meaning it only recalculates when needed.
 import { signal, computed } from '@angular/core';
